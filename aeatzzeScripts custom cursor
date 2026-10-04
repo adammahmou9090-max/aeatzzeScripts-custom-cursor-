@@ -1,0 +1,227 @@
+local player = game.Players.LocalPlayer
+local tweenService = game:GetService("TweenService")
+local coreGui = game:GetService("CoreGui")
+local mouse = player:GetMouse()
+
+local tweenFast = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+-- Remove instância antiga caso já exista
+if player.PlayerGui:FindFirstChild("zoewar_CrosshairGUI") then
+    player.PlayerGui["zoewar_CrosshairGUI"]:Destroy()
+end
+
+-- ScreenGui Principal
+local sg = Instance.new("ScreenGui")
+sg.Name = "zoewar_CrosshairGUI"
+sg.ResetOnSpawn = false
+sg.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+sg.IgnoreGuiInset = true
+sg.Parent = player.PlayerGui
+
+-- Frame do Submenu de Crosshair
+local crosshairFrame = Instance.new("Frame", sg)
+crosshairFrame.Name = "CrosshairMenu"
+crosshairFrame.Size = UDim2.new(0, 290, 0, 370)
+crosshairFrame.Position = UDim2.new(0.5, -145, 0.5, -185)
+crosshairFrame.BackgroundColor3 = Color3.fromRGB(10, 8, 14)
+crosshairFrame.BackgroundTransparency = 0.1
+crosshairFrame.BorderSizePixel = 0
+crosshairFrame.Visible = true
+crosshairFrame.Active = true
+crosshairFrame.Draggable = true
+
+local cCorner = Instance.new("UICorner", crosshairFrame)
+cCorner.CornerRadius = UDim.new(0, 16)
+
+local cStroke = Instance.new("UIStroke", crosshairFrame)
+cStroke.Thickness = 1.6
+cStroke.Color = Color3.fromRGB(160, 160, 170)
+cStroke.Transparency = 0.25
+
+local cGradient = Instance.new("UIGradient", crosshairFrame)
+cGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(18, 12, 26)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(5, 4, 8))
+})
+cGradient.Rotation = 60
+
+local shadow = Instance.new("ImageLabel", crosshairFrame)
+shadow.Name = "DropShadow"
+shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+shadow.BackgroundTransparency = 1
+shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+shadow.Size = UDim2.new(1, 40, 1, 40)
+shadow.ZIndex = -1
+shadow.Image = "rbxassetid://6015897843"
+shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+shadow.ImageTransparency = 0.35
+
+-- Título
+local cTitle = Instance.new("TextLabel", crosshairFrame)
+cTitle.Size = UDim2.new(1, -45, 0, 46)
+cTitle.Position = UDim2.new(0, 14, 0, 0)
+cTitle.BackgroundTransparency = 1
+cTitle.Text = "Cursor Changer aeatzze😋"
+cTitle.TextColor3 = Color3.fromRGB(200, 200, 210)
+cTitle.Font = Enum.Font.GothamBold
+cTitle.TextSize = 12
+cTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Botão de Fechar
+local cClose = Instance.new("TextButton", crosshairFrame)
+cClose.Size = UDim2.new(0, 26, 0, 26)
+cClose.Position = UDim2.new(1, -38, 0, 10)
+cClose.BackgroundColor3 = Color3.fromRGB(25, 18, 35)
+cClose.BackgroundTransparency = 0.2
+cClose.Text = "X"
+cClose.TextColor3 = Color3.fromRGB(180, 170, 200)
+cClose.Font = Enum.Font.GothamBold
+cClose.TextSize = 10
+
+local closeCorner = Instance.new("UICorner", cClose)
+closeCorner.CornerRadius = UDim.new(0, 8)
+local closeStroke = Instance.new("UIStroke", cClose)
+closeStroke.Thickness = 1
+closeStroke.Color = Color3.fromRGB(45, 30, 65)
+
+cClose.MouseEnter:Connect(function()
+    tweenService:Create(cClose, tweenFast, {BackgroundColor3 = Color3.fromRGB(220, 50, 50), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+    tweenService:Create(closeStroke, tweenFast, {Color = Color3.fromRGB(220, 50, 50)}):Play()
+end)
+cClose.MouseLeave:Connect(function()
+    tweenService:Create(cClose, tweenFast, {BackgroundColor3 = Color3.fromRGB(25, 18, 35), TextColor3 = Color3.fromRGB(180, 170, 200)}):Play()
+    tweenService:Create(closeStroke, tweenFast, {Color = Color3.fromRGB(45, 30, 65)}):Play()
+end)
+cClose.MouseButton1Click:Connect(function()
+    sg:Destroy()
+end)
+
+-- Campo de entrada (Input de ID)
+local shiftInput = Instance.new("TextBox", crosshairFrame)
+shiftInput.Size = UDim2.new(1, -28, 0, 36)
+shiftInput.Position = UDim2.new(0, 14, 0, 52)
+shiftInput.PlaceholderText = "Cole o ID do Crosshair aqui..."
+shiftInput.PlaceholderColor3 = Color3.fromRGB(140, 130, 155)
+shiftInput.Text = ""
+shiftInput.BackgroundColor3 = Color3.fromRGB(16, 12, 22)
+shiftInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+shiftInput.Font = Enum.Font.GothamMedium
+shiftInput.TextSize = 11.5
+Instance.new("UICorner", shiftInput).CornerRadius = UDim.new(0, 10)
+local cInputStroke = Instance.new("UIStroke", shiftInput)
+cInputStroke.Color = Color3.fromRGB(45, 30, 65)
+cInputStroke.Transparency = 0.5
+
+-- Botão para aplicar
+local applyShiftBtn = Instance.new("TextButton", crosshairFrame)
+applyShiftBtn.Size = UDim2.new(1, -28, 0, 34)
+applyShiftBtn.Position = UDim2.new(0, 14, 0, 96)
+applyShiftBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 90)
+applyShiftBtn.Text = "Aplicar ID Digitado"
+applyShiftBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+applyShiftBtn.Font = Enum.Font.GothamBold
+applyShiftBtn.TextSize = 11.5
+Instance.new("UICorner", applyShiftBtn).CornerRadius = UDim.new(0, 10)
+
+-- Função para alterar a imagem do Crosshair na UI e o Cursor do Mouse no PC
+local function aplicarIdNoCrosshairMM2(id)
+    local assetId = "rbxassetid://" .. id
+
+    -- Altera o cursor físico do Mouse no PC
+    mouse.Icon = assetId
+
+    -- Altera os elementos de UI no jogo (MM2)
+    task.spawn(function()
+        pcall(function()
+            for _, v in pairs(coreGui:GetDescendants()) do
+                if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+                    local nome = v.Name:lower()
+                    if nome:find("crosshair") or nome:find("gun") or nome:find("mira") or nome:find("target") then
+                        v.Image = assetId
+                    end
+                end
+            end
+            for _, v in pairs(player.PlayerGui:GetDescendants()) do
+                if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+                    local nome = v.Name:lower()
+                    if nome:find("crosshair") or nome:find("gun") or nome:find("mira") then
+                        v.Image = assetId
+                    end
+                end
+            end
+        end)
+    end)
+end
+
+applyShiftBtn.MouseButton1Click:Connect(function()
+    if shiftInput.Text ~= "" then
+        aplicarIdNoCrosshairMM2(shiftInput.Text)
+        applyShiftBtn.Text = "Aplicado com Sucesso!"
+        task.wait(0.8)
+        applyShiftBtn.Text = "Aplicar ID Digitado"
+    end
+end)
+
+-- Container com Scroll para os Presets
+local scrollPresets = Instance.new("ScrollingFrame", crosshairFrame)
+scrollPresets.Size = UDim2.new(1, -28, 0, 190)
+scrollPresets.Position = UDim2.new(0, 14, 0, 138)
+scrollPresets.BackgroundColor3 = Color3.fromRGB(12, 9, 16)
+scrollPresets.BackgroundTransparency = 0.4
+scrollPresets.BorderSizePixel = 0
+scrollPresets.CanvasSize = UDim2.new(0, 0, 0, 720)
+scrollPresets.ScrollBarThickness = 2.5
+scrollPresets.ScrollBarImageColor3 = Color3.fromRGB(140, 140, 150)
+Instance.new("UICorner", scrollPresets).CornerRadius = UDim.new(0, 10)
+
+-- Lista de IDs Pré-definidos
+local idsDasFotos = {
+    {"Hello Kitty Fofo", "10639756312"},
+    {"Hello Kitty Azul", "10973237327"},
+    {"Ursinho Rilakkuma", "11722088774"},
+    {"Dinossaurinho Verde", "11786346660"},
+    {"Cupcake Fofo", "11786202922"},
+    {"Coração Rosa Neon", "12164957701"},
+    {"Cruz Estilizada", "11767037107"},
+    {"Gatinho com Mira", "5998624778"},
+    {"Ursinho Sangrento", "11796157703"},
+    {"Kuromi", "11796165302"},
+    {"Caveira Alvo", "11722153703"},
+    {"Crosshair Rosa Neon", "11720549734"},
+    {"Ponto Rosa Claro", "11927621846"},
+    {"Ponto Roxo", "11927593271"},
+    {"Ponto Azul Claro", "11934534450"},
+    {"Mira Estrela Azul", "11927574847"},
+    {"Mira Amarela", "11932942663"},
+    {"Alvo Coração Rosa", "11390723044"},
+    {"Alvo Clássico", "251497633"},
+    {"Alvo Hello Kitty", "11718541709"}
+}
+
+local yPosPreset = 5
+for _, info in ipairs(idsDasFotos) do
+    local nomePreset = info[1]
+    local idPreset = info[2]
+    
+    local pBtn = Instance.new("TextButton", scrollPresets)
+    pBtn.Size = UDim2.new(1, -10, 0, 28)
+    pBtn.Position = UDim2.new(0, 5, 0, yPosPreset)
+    pBtn.BackgroundColor3 = Color3.fromRGB(20, 14, 28)
+    pBtn.BackgroundTransparency = 0.3
+    pBtn.Text = nomePreset
+    pBtn.TextColor3 = Color3.fromRGB(200, 190, 215)
+    pBtn.Font = Enum.Font.GothamMedium
+    pBtn.TextSize = 11.5
+    Instance.new("UICorner", pBtn).CornerRadius = UDim.new(0, 8)
+    
+    pBtn.MouseButton1Click:Connect(function()
+        shiftInput.Text = idPreset
+        aplicarIdNoCrosshairMM2(idPreset)
+        pBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 90)
+        pBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        task.wait(0.4)
+        pBtn.BackgroundColor3 = Color3.fromRGB(20, 14, 28)
+        pBtn.TextColor3 = Color3.fromRGB(200, 190, 215)
+    end)
+    yPosPreset = yPosPreset + 32
+end
